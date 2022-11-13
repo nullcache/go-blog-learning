@@ -1,9 +1,14 @@
 package v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/nullcache/go-blog-learning/pkg/app"
+	"github.com/nullcache/go-blog-learning/pkg/errcode"
+)
 
 func NewArticle(c *gin.Context) {
-	c.String(200, "200")
+	// test
+	app.NewResponse(c).ToErrorResponse(errcode.InvalidParams.WithDetails("123"))
 }
 func EditArticle(c *gin.Context) {
 }

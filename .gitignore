@@ -6,7 +6,10 @@
 *.dylib
 .idea
 *.log
-
+storage/logs
+cmd/tmp/
+.air.toml
+temp
 
 # Test binary, built with `go test -c`
 *.test
@@ -16,7 +19,5 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-/cmd/tmp/
-.air.toml
-temp
+
 
