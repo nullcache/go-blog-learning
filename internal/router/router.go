@@ -14,15 +14,15 @@ func NewRouter() *gin.Engine {
 		{
 			articleGroup.POST("/newArticle", v1.NewArticle)
 			articleGroup.POST("/editArticle", v1.EditArticle)
-			articleGroup.GET("/delArticle", v1.DelArticle)
+			articleGroup.POST("/delArticle", v1.DelArticle)
 			articleGroup.GET("/getArticleList", v1.GetArticleList)
 			articleGroup.GET("/getArticleByID", v1.GetArticleByID)
 		}
-		tagGroup := apiV1.Group("/group")
+		tagGroup := apiV1.Group("/tag")
 		{
 			tagGroup.POST("/newTag", v1.NewTag)
 			tagGroup.POST("/editTag", v1.EditTag)
-			tagGroup.GET("/delTag", v1.DelTag)
+			tagGroup.POST("/delTag", v1.DelTag)
 			tagGroup.GET("/getTagList", v1.GetTagList)
 			tagGroup.GET("/getTagListByID", v1.GetTagByID)
 		}

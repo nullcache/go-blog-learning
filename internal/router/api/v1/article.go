@@ -8,7 +8,7 @@ import (
 
 func NewArticle(c *gin.Context) {
 	// test
-	app.NewResponse(c).ToErrorResponse(errcode.InvalidParams.WithDetails("123"))
+	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
 }
 func EditArticle(c *gin.Context) {
 }
