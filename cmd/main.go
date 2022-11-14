@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/nullcache/go-blog-learning/global"
-	"github.com/nullcache/go-blog-learning/internal/initDB"
+	"github.com/nullcache/go-blog-learning/internal/model"
 	"github.com/nullcache/go-blog-learning/internal/router"
 	"log"
 	"net/http"
@@ -19,10 +19,18 @@ func init() {
 	if err != nil {
 		log.Panicf("init.setupSetting err: %v", err)
 	}
-	err = initDB.SetupDBEngine()
+	err = SetupDBEngine()
 	if err != nil {
 		log.Panicf("init.setupDB err: %v", err)
 	}
+}
+
+func SetupDBEngine() (err error) {
+	global.DBEngine, err = model.NewDBEngine(global.DatabaseSetting)
+	if err != nil {
+		return
+	}
+	return
 }
 
 func main() {

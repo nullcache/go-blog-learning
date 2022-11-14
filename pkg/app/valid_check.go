@@ -28,9 +28,9 @@ type ValidError struct {
 	Message string
 }
 
-type ValidErrorList []ValidError
+type ValidErrorList []*ValidError
 
-func (v ValidError) Error() string {
+func (v *ValidError) Error() string {
 	return v.Message
 }
 
@@ -39,7 +39,7 @@ func (v ValidErrorList) Error() string {
 }
 
 func (v ValidErrorList) ToErrorList() []string {
-	var errs []string
+	var errs = make([]string, 0, 5)
 	for _, err := range v {
 		errs = append(errs, err.Error())
 	}
@@ -57,7 +57,7 @@ func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrorList) {
 		}
 
 		for key, value := range verrs.Translate(trans) {
-			errs = append(errs, ValidError{
+			errs = append(errs, &ValidError{
 				Key:     key,
 				Message: value,
 			})

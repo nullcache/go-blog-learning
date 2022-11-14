@@ -3,6 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	v1 "github.com/nullcache/go-blog-learning/internal/router/api/v1"
+	"github.com/nullcache/go-blog-learning/pkg/app"
+	"github.com/nullcache/go-blog-learning/pkg/errcode"
 )
 
 func NewRouter() *gin.Engine {
@@ -28,6 +30,8 @@ func NewRouter() *gin.Engine {
 		}
 
 	}
-
+	r.NoRoute(func(c *gin.Context) {
+		app.NewResponse(c).ToErrorResponse(errcode.NotFound)
+	})
 	return r
 }
