@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/zh"
@@ -51,6 +52,7 @@ func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrorList) {
 	var errs ValidErrorList
 	err := c.ShouldBind(v)
 	if err != nil {
+		fmt.Printf("%s", err.Error())
 		verrs, ok := err.(val.ValidationErrors)
 		if !ok {
 			return false, errs // 这里errs是空切片啊

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/nullcache/go-blog-learning/global"
 	"github.com/nullcache/go-blog-learning/pkg/setting"
@@ -9,6 +10,9 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/soft_delete"
+	"log"
+	"reflect"
+	"time"
 )
 
 type Model struct {
@@ -49,5 +53,39 @@ func NewDBEngine(dbSetting *setting.DatabaseSetting) (*gorm.DB, error) {
 
 	dbConfig.SetMaxIdleConns(dbSetting.MaxIdleConns)
 	dbConfig.SetMaxOpenConns(dbSetting.MaxOpenConns)
+	dbConfig.SetConnMaxLifetime(dbSetting.MaxLifetime * time.Hour)
+
 	return db, nil
+}
+
+type ctxTransactionKey struct{}
+
+func CtxWithTransaction(ctx context.Context, tx *gorm.DB) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	return context.WithValue(ctx, ctxTransactionKey{}, tx)
+}
+
+func Transaction(ctx context.Context, fn func(txctx context.Context) error) error {
+	db := global.DBEngine.WithContext(ctx)
+	return db.Transaction(func(tx *gorm.DB) error {
+		txctx := CtxWithTransaction(ctx, tx)
+		return fn(txctx)
+	})
+}
+
+func GetDBWithCtx(ctx context.Context) *gorm.DB {
+	iface := ctx.Value(ctxTransactionKey{})
+
+	if iface != nil {
+		tx, ok := iface.(*gorm.DB)
+		if !ok {
+			log.Panicf("unexpect context value type: %s", reflect.TypeOf(tx))
+			return nil
+		}
+
+		return tx
+	}
+	return global.DBEngine.WithContext(ctx)
 }

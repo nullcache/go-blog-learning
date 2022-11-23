@@ -18,7 +18,7 @@ func NewRouter() *gin.Engine {
 			articleGroup.POST("/editArticle", v1.EditArticle)
 			articleGroup.POST("/delArticle", v1.DelArticle)
 			articleGroup.GET("/getArticleList", v1.GetArticleList)
-			articleGroup.GET("/getArticleByID", v1.GetArticleByID)
+			articleGroup.GET("/getArticleById", v1.GetArticleByID)
 		}
 		tagGroup := apiV1.Group("/tag")
 		{
@@ -26,7 +26,8 @@ func NewRouter() *gin.Engine {
 			tagGroup.POST("/editTag", v1.EditTag)
 			tagGroup.POST("/delTag", v1.DelTag)
 			tagGroup.GET("/getTagList", v1.GetTagList)
-			tagGroup.GET("/getTagListByID", v1.GetTagByID)
+			tagGroup.GET("/getTagById", v1.GetTagByID)
+
 		}
 
 	}

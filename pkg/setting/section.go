@@ -35,6 +35,7 @@ type DatabaseSetting struct {
 	ParseTime    bool
 	MaxIdleConns int
 	MaxOpenConns int
+	MaxLifetime  time.Duration
 }
 
 func (s *Setting) ReadSection(k string, v any) error {
