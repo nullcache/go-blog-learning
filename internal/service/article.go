@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/liangyaopei/structmap"
 	"github.com/nullcache/go-blog-learning/internal/dao"
 	"github.com/nullcache/go-blog-learning/internal/model"
 	"github.com/nullcache/go-blog-learning/pkg/app"
@@ -13,18 +14,18 @@ type NewArticleRequest struct {
 	CoverImageUrl string `binding:"omitempty,url,max=255" form:"cover_image_url" json:"cover_image_url"`
 	TagID         uint32 `binding:"omitempty,gte=1,max=100" form:"tag_id" json:"tag_id"`
 	CreatedBy     string `binding:"required,max=100" form:"created_by" json:"created_by"`
-	Status        uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status,default=1"`
+	Status        uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status"`
 }
 
 type UpdateArticleRequest struct {
-	ID            uint32 `binding:"required,max=100" form:"id" json:"id"`
-	Title         string `binding:"max=100" form:"title" json:"title"`
-	Desc          string `binding:"max=255" form:"desc" json:"desc" `
-	Content       string `form:"content" json:"content"`
-	CoverImageUrl string `binding:"omitempty,url,max=255" form:"cover_image_url" json:"cover_image_url"`
-	TagID         uint32 `binding:"omitempty,gte=1,max=100" form:"tag_id" json:"tag_id"`
-	UpdatedBy     string `binding:"required,max=100" form:"updated_by" json:"updated_by"`
-	Status        uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status,default=1"`
+	ID            uint32  `binding:"required,max=100" form:"id" json:"id,omitempty"`
+	Title         string  `binding:"max=100" form:"title" json:"title,omitempty"`
+	Desc          *string `binding:"omitempty,max=255" form:"desc" json:"desc"`
+	Content       string  `form:"content" json:"content,omitempty"`
+	CoverImageUrl *string `binding:"omitempty,url,max=255" form:"cover_image_url" json:"cover_image_url"`
+	TagID         *uint32 `binding:"omitempty,gte=0,max=100" form:"tag_id" json:"tag_id"`
+	UpdatedBy     string  `binding:"required,max=100" form:"updated_by" json:"updated_by,omitempty"`
+	Status        *uint8  `binding:"omitempty,oneof=0 1 2" form:"status" json:"status"`
 }
 
 type DelArticleRequest struct {
@@ -60,18 +61,12 @@ func (s *Service) DelArticle(param *DelArticleRequest) error {
 }
 
 func (s *Service) UpdateArticle(r *UpdateArticleRequest) error {
-	return dao.New(s.ctx).UpdateArticle(&model.Article{
-		Model: &model.Model{
-			ID:        r.ID,
-			UpdatedBy: r.UpdatedBy,
-			Status:    r.Status,
-		},
-		Title:         r.Title,
-		Desc:          r.Desc,
-		Content:       r.Content,
-		CoverImageUrl: r.CoverImageUrl,
-		TagID:         r.TagID,
-	})
+	// use json for less writing
+	updateMap, err := structmap.StructToMap(r, "json", "")
+	if err != nil {
+		return err
+	}
+	return dao.New(s.ctx).UpdateArticle(r.ID, updateMap)
 }
 
 func (s *Service) ArticleList(param *ArticleListRequest, pager app.Pager) ([]*model.Article, *app.Pager, error) {

@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/nullcache/go-blog-learning/global"
 	"github.com/nullcache/go-blog-learning/internal/service"
@@ -13,7 +12,6 @@ func NewArticle(c *gin.Context) {
 	param := service.NewArticleRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
-	fmt.Printf("%#v", param)
 	if !valid {
 		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.ToErrorList()...))
@@ -48,9 +46,6 @@ func EditArticle(c *gin.Context) {
 		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.ToErrorList()...))
 		return
-	}
-	if param.Status == 0 {
-		param.Status = 1
 	}
 	svc := service.New(c.Request.Context())
 	_, err := svc.GetArticle(&service.GetArticleRequest{ID: param.ID})

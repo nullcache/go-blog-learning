@@ -27,14 +27,7 @@ func (d *Dao) CreateTag(name string, status uint8, createdBy string) error {
 	return m.Create(d.db)
 }
 
-func (d *Dao) UpdateTag(id uint32, name string, status uint8, updatedBy string) error {
-	updateMap := map[string]any{
-		"updated_by": updatedBy,
-		"status":     status,
-	}
-	if name != "" {
-		updateMap["name"] = name
-	}
+func (d *Dao) UpdateTag(id uint32, updateMap map[string]any) error {
 	m := model.Tag{
 		Model: &model.Model{
 			ID: id,

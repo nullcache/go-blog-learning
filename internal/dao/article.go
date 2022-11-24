@@ -25,24 +25,10 @@ func (d *Dao) DeleteArticle(id uint32) error {
 	return m.Delete(d.db)
 }
 
-func (d *Dao) UpdateArticle(a *model.Article) error {
-	updateMap := map[string]any{
-		"updated_by":    a.UpdatedBy,
-		"desc":          a.Desc,
-		"CoverImageUrl": a.CoverImageUrl,
-		"tag_id":        a.TagID,
-		"status":        a.Status,
-	}
-	if a.Title != "" {
-		updateMap["title"] = a.Title
-	}
-	if a.Content != "" {
-		updateMap["content"] = a.Content
-	}
-
+func (d *Dao) UpdateArticle(id uint32, updateMap map[string]any) error {
 	m := model.Article{
 		Model: &model.Model{
-			ID: a.ID,
+			ID: id,
 		},
 	}
 	return m.Update(d.db, updateMap)

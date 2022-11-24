@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/liangyaopei/structmap"
 	"github.com/nullcache/go-blog-learning/internal/dao"
 	"github.com/nullcache/go-blog-learning/internal/model"
 	"github.com/nullcache/go-blog-learning/pkg/app"
@@ -13,10 +14,10 @@ type CreateTagRequest struct {
 }
 
 type UpdateTagRequest struct {
-	ID        uint32 `binding:"required,gte=1" form:"id" json:"id"`
-	Name      string `binding:"omitempty,min=1,max=100" form:"name" json:"name"`
-	Status    uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status"`
-	UpdatedBy string `binding:"required,min=1,max=100" form:"updated_by" json:"updated_by"`
+	ID        uint32 `binding:"required,gte=1" form:"id" json:"id,omitempty"`
+	Name      string `binding:"omitempty,min=1,max=100" form:"name" json:"name,omitempty"`
+	Status    *uint8 `binding:"omitempty,oneof=0 1 2" form:"status" json:"status"`
+	UpdatedBy string `binding:"required,min=1,max=100" form:"updated_by" json:"updated_by,omitempty"`
 }
 
 type DeleteTagRequest struct {
@@ -37,7 +38,12 @@ func (s *Service) NewTag(param *CreateTagRequest) error {
 }
 
 func (s *Service) UpdateTag(param *UpdateTagRequest) error {
-	return dao.New(s.ctx).UpdateTag(param.ID, param.Name, param.Status, param.UpdatedBy)
+	// use json for less writing
+	updateMap, err := structmap.StructToMap(param, "json", "")
+	if err != nil {
+		return err
+	}
+	return dao.New(s.ctx).UpdateTag(param.ID, updateMap)
 }
 
 func (s *Service) DelTag(param *DeleteTagRequest) error {
