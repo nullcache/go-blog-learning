@@ -29,7 +29,7 @@ func (t *Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 		db = db.Offset(pageOffset).Limit(pageSize)
 	}
 	if t.Name != "" {
-		db = db.Where("name = ?", t.Name)
+		db = db.Where("name like ?", "%"+t.Name+"%")
 	}
 	if t.Status != 0 {
 		db = db.Where("status = ?", t.Status)

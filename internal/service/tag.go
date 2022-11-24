@@ -7,29 +7,29 @@ import (
 )
 
 type CreateTagRequest struct {
-	Name      string `form:"name" binding:"required,min=1,max=100"`
-	CreatedBy string `form:"created_by" binding:"required,min=1,max=100"`
-	Status    uint8  `form:"status,default=1" binding:"oneof=0 1 2"`
+	Name      string `binding:"required,min=1,max=100" form:"name" json:"name"`
+	CreatedBy string `binding:"required,min=1,max=100" form:"created_by" json:"created_by"`
+	Status    uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status"`
 }
 
 type UpdateTagRequest struct {
-	ID        uint32 `form:"id" binding:"required,gte=1"`
-	Name      string `form:"name" binding:"min=1,max=100"`
-	Status    uint8  `form:"status,default=1" binding:"oneof=0 1 2"`
-	UpdatedBy string `form:"updated_by" binding:"required,min=1,max=100"`
+	ID        uint32 `binding:"required,gte=1" form:"id" json:"id"`
+	Name      string `binding:"omitempty,min=1,max=100" form:"name" json:"name"`
+	Status    uint8  `binding:"oneof=0 1 2" form:"status,default=1" json:"status"`
+	UpdatedBy string `binding:"required,min=1,max=100" form:"updated_by" json:"updated_by"`
 }
 
 type DeleteTagRequest struct {
-	ID uint32 `form:"id" binding:"required,gte=1"`
+	ID uint32 `binding:"required,gte=1" form:"id" json:"id" `
 }
 
 type TagListRequest struct {
-	Name   string `form:"name" binding:"max=100"`
-	Status uint8  `form:"status,default=0" binding:"oneof=0 1 2"`
+	Name   string `binding:"omitempty,max=100" form:"name" json:"name"`
+	Status uint8  `binding:"oneof=0 1 2" form:"status" json:"status"`
 }
 
 type GetTagRequest struct {
-	ID uint32 `form:"id" binding:"required,gte=1"`
+	ID uint32 `binding:"required,gte=1" form:"id" json:"id"`
 }
 
 func (s *Service) NewTag(param *CreateTagRequest) error {
@@ -51,7 +51,7 @@ func (s *Service) TagList(param *TagListRequest, pager app.Pager) ([]*model.Tag,
 	}
 	totalPage := pager.TotalCount/pager.PageSize + 1
 	p := &app.Pager{TotalCount: totalCount, TotalPage: totalPage}
-	items, err := dao.New(s.ctx).GetCountList(param.Name, param.Status, pager.Page, pager.PageSize)
+	items, err := dao.New(s.ctx).GetTagList(param.Name, param.Status, pager.Page, pager.PageSize)
 	return items, p, err
 }
 

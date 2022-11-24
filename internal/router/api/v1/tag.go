@@ -17,6 +17,9 @@ func NewTag(c *gin.Context) {
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.ToErrorList()...))
 		return
 	}
+	if param.Status == 0 {
+		param.Status = 1
+	}
 	svc := service.New(c.Request.Context())
 	err := svc.NewTag(&param)
 	if err != nil {
@@ -35,6 +38,9 @@ func EditTag(c *gin.Context) {
 		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.ToErrorList()...))
 		return
+	}
+	if param.Status == 0 {
+		param.Status = 1
 	}
 	svc := service.New(c.Request.Context())
 	_, err := svc.GetTag(&service.GetTagRequest{ID: param.ID})

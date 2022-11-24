@@ -27,7 +27,6 @@ func NewRouter() *gin.Engine {
 			tagGroup.POST("/delTag", v1.DelTag)
 			tagGroup.GET("/getTagList", v1.GetTagList)
 			tagGroup.GET("/getTagById", v1.GetTagByID)
-
 		}
 
 	}

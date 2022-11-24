@@ -12,7 +12,7 @@ func (d *Dao) CountTag(name string, status uint8) (int, error) {
 	return m.Count(d.db)
 }
 
-func (d *Dao) GetCountList(name string, status uint8, page, pageSize int) ([]*model.Tag, error) {
+func (d *Dao) GetTagList(name string, status uint8, page, pageSize int) ([]*model.Tag, error) {
 	m := model.Tag{Name: name, Model: &model.Model{
 		Status: status,
 	}}
@@ -30,16 +30,14 @@ func (d *Dao) CreateTag(name string, status uint8, createdBy string) error {
 func (d *Dao) UpdateTag(id uint32, name string, status uint8, updatedBy string) error {
 	updateMap := map[string]any{
 		"updated_by": updatedBy,
+		"status":     status,
 	}
 	if name != "" {
 		updateMap["name"] = name
 	}
 	m := model.Tag{
-		Name: name,
 		Model: &model.Model{
-			ID:        id,
-			UpdatedBy: updatedBy,
-			Status:    status,
+			ID: id,
 		},
 	}
 	return m.Update(d.db, updateMap)
